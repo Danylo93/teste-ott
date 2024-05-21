@@ -6,6 +6,7 @@ import React, {useEffect, useState}from 'react';
 import { Video } from '@/components/modal-add-video';
 import EmblaCarousel from '@/components/Carrousel';
 import { Header } from '@/components/Header';
+import { api } from '@/services/api';
 
 
 
@@ -13,11 +14,10 @@ export default function Videos() {
 
   const [videos, setVideos] = useState<Video[]>([]);
 
-  async function buscarVideos() {
+  async function findVideos() {
     try {
-      const resposta = await fetch('http://localhost:3333/videos');
-      const videos = await resposta.json();
-      return videos;
+      const response = await api.get('/videos');
+      return response.data;
     } catch (erro) {
       console.error(erro);
       return [];
@@ -25,7 +25,7 @@ export default function Videos() {
   }
 
   useEffect(() => {
-    buscarVideos().then(videos => {
+    findVideos().then(videos => {
       setVideos(videos);
     });
   }, []);

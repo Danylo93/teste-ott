@@ -30,11 +30,17 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3333/categories')
-      .then(response => response.json())
-      .then(data => setCategories(data));
+    const loadingCategories = async () => {
+      try {
+        const response = await api.get('/categories');
+        setCategories(response.data);
+      } catch (erro) {
+        console.error(erro);
+      }
+    };
+  
+    loadingCategories();
   }, []);
-
   const extractYouTubeVideoId = (url: string) => {
     const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return videoIdMatch ? videoIdMatch[1] : null;

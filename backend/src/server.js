@@ -8,8 +8,7 @@ require('dotenv').config()
 
 const app = express();
 
-// Conecte ao seu banco de dados MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI);
 
 app.use(cors());
 app.use(bodyParser.json());

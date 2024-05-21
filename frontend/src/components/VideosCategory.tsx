@@ -3,21 +3,21 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd";
 import { Video } from "./modal-add-video";
+import { api } from "@/services/api";
 
 const VideosCategory = () => {
     const [videos, setVideos] = useState<Video[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    async function buscarVideos() {
+    async function findVideos() {
         try {
-            const resposta = await fetch('http://localhost:3333/videos');
-            const videos = await resposta.json();
-            return videos;
+          const response = await api.get('/videos');
+          return response.data;
         } catch (erro) {
-            console.error(erro);
-            return [];
+          console.error(erro);
+          return [];
         }
-    }
+      }
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -27,7 +27,7 @@ const VideosCategory = () => {
     }, []);
 
     useEffect(() => {
-        buscarVideos().then(videos => {
+        findVideos().then(videos => {
             setVideos(videos || []);
         });
     }, []);
@@ -63,23 +63,23 @@ const VideosCategory = () => {
 
         setVideos(Object.values(newData).flat());
 
-        // Atualizar a API
         try {
-            const response = await fetch('http://localhost:3333/videos/' + item.id, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    categories: [destinationCategory, ...item.categories.filter(category => category !== sourceCategory)]
-                })
+            const response = await api.put(`/videos/${item.id}`, {
+              categories: [destinationCategory, ...item.categories.filter(category => category !== sourceCategory)]
+            }, {
+              headers: {
+                'Content-Type': 'application/json'
+              }
             });
-            if (!response.ok) {
-                throw new Error('Erro ao atualizar a API');
+          
+            if (response.status === 200) {
+              console.log('Vídeo atualizado com sucesso!');
+            } else {
+              throw new Error('Erro ao atualizar a API');
             }
-        } catch (error) {
+          } catch (error) {
             console.error(error);
-        }
+          }
     };
 
 

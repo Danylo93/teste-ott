@@ -9,19 +9,24 @@ import { FaArrowRight } from 'react-icons/fa'
 import { Video } from "@/types/video";
 import { Category } from "@/types/category";
 import ModalEditCategory from "@/components/modal-edit-category";
+import { api } from "@/services/api";
 
 
 
 export default function Home() {
 
 
-  const [categorias, setCategorias] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
-  const [nomeCategoria, setNomeCategoria] = useState('');
+  const [nameCategoria, setNameCategoria] = useState('');
   const [addVideoModalOpen, setAddVideoModalOpen] = useState(false);
   const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
 
   const handleAddVideo = () => {
+    if (categories.length === 0) {
+      alert('Por favor adicione uma categoria, antes de adicionar um vídeo!!!');
+      return;
+    }
     setAddVideoModalOpen(true);
   };
 
@@ -29,106 +34,59 @@ export default function Home() {
     setAddVideoModalOpen(false);
   };
 
-  const handleEditCategory = async () => {
-    setEditCategoryModalOpen(true);
-  };
-
-  const handleCloseEditCategory = () => {
-    setEditCategoryModalOpen(false);
-  };
-
   
-  async function criarCategoria() {
-    if (!nomeCategoria) {
+  async function createCategory() {
+    if (!nameCategoria) {
       alert('Por favor, digite o nome da categoria.');
       return;
     }
-
+  
     try {
-      const resposta = await fetch('http://localhost:3333/categories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: nomeCategoria }),
+      const response = await api.post('/categories', {
+        name: nameCategoria,
       });
-
-      if (!resposta.ok) {
-        throw new Error(`HTTP error! status: ${resposta.status}`);
+  
+      if (response.status === 201) {
+        alert('Categoria criada com sucesso!');
+        setNameCategoria('');
+      } else {
+        throw new Error(`Erro HTTP! status: ${response.status}`);
       }
-
-      const categoria = await resposta.json();
-      alert('Categoria criada com sucesso!');
-      setNomeCategoria(''); // Limpa o input
     } catch (erro) {
       console.error(erro);
       alert('Ocorreu um erro ao criar a categoria.');
     }
   }
   
- async function buscarCategorias() {
-  try {
-    const resposta = await fetch('http://localhost:3333/categories');
-    const categorias = await resposta.json();
-    return categorias;
-  } catch (erro) {
-    console.error(erro);
-    return [];
+  async function findCategories() {
+    try {
+      const response = await api.get('/categories');
+      return response.data;
+    } catch (erro) {
+      console.error(erro);
+      return [];
+    }
   }
-}
 
-async function buscarVideos() {
-  try {
-    const resposta = await fetch('http://localhost:3333/videos');
-    const videos = await resposta.json();
-    return videos;
-  } catch (erro) {
-    console.error(erro);
-    return [];
+  async function findVideos() {
+    try {
+      const response = await api.get('/videos');
+      return response.data;
+    } catch (erro) {
+      console.error(erro);
+      return [];
+    }
   }
-}
 
 
 useEffect(() =>  {
-  buscarCategorias().then(categorias => {
-    setCategorias(categorias);
+  findCategories().then(categorias => {
+    setCategories(categorias);
   });
-  buscarVideos().then(videos => {
+  findVideos().then(videos => {
     setVideos(videos);
   });
 }, [])
-
-
-
-
-const handleDelete = async (id: string) => {
-  try {
-    if (!id) {
-      throw new Error('ID da categoria não fornecido');
-    }
-
-    categorias.forEach(categoria => {
-      console.log(categoria.id); 
-    });
-    const response = await fetch(`http://localhost:3333/categories/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-
-    const updatedCategorias = categorias.filter(categoria => categoria.id !== id);
-    setCategorias(updatedCategorias);
-
-    console.log(`Categoria com ID: ${id} deletada com sucesso.`);
-    alert('Categoria deletada com sucesso!');
-  } catch (error) {
-    console.error(`Ocorreu um erro ao deletar a categoria: ${error}`);
-    alert('Ocorreu um erro ao deletar a categoria.');
-  }
-};
 
 
   return (
@@ -150,10 +108,10 @@ const handleDelete = async (id: string) => {
     id="category"
     placeholder="Digite o nome da Categoria"
     className="border-2 border-gray-400 w-full h-9 rounded-lg bg-white px-4 text-gray-400 outline-none focus:outline-none mr-2"
-    value={nomeCategoria}
-    onChange={e => setNomeCategoria(e.target.value)}
+    value={nameCategoria}
+    onChange={e => setNameCategoria(e.target.value)}
   />
-  <button onClick={criarCategoria} className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2">Adicionar Categoria</button>
+  <button onClick={createCategory} className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2">Adicionar Categoria</button>
   
 </div>
 
@@ -167,7 +125,7 @@ const handleDelete = async (id: string) => {
       <h4 className="text-zinc-600">A Ordenação será conforme está abaixo, você pode alterar a ordem arrastando os vídeos.</h4>
       <button 
         className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2"
-        onClick={handleAddVideo}  disabled={categorias.length === 0}
+        onClick={handleAddVideo}  disabled={categories.length === 0}
       >
         Adicionar Novo Vídeo
       </button>
