@@ -1,3 +1,4 @@
+import { api } from '@/services/api';
 import { useState, useEffect, FC, FormEvent } from 'react';
 
 export interface Video {
@@ -56,23 +57,16 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
       description: description,
       categories: selectedCategories,
       videoUrl: videoUrl,
-      thumbnail: thumbnail
+      thumbnail: thumbnail,
     };
-
+  
     try {
-      const response = await fetch('http://localhost:3333/videos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(videoData),
-      });
-
-      if (!response.ok) {
+      const response = await api.post('/videos', videoData);
+  
+      if (!response.status === 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      const responseData = await response.json();
+  
       alert('Vídeo adicionado com sucesso!');
       onClose();
     } catch (error) {

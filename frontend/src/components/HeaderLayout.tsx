@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import React from 'react';
 import { Logo } from './Logo';
-import { NavLinks } from './NavLinks';
 import { UserProfile } from './UserProfile';
 
 

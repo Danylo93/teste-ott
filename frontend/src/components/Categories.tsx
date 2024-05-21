@@ -1,18 +1,27 @@
 "use client"
 
+import { api } from "@/services/api";
+import { Category } from "@/types/category";
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { FaEdit, FaTrash } from "react-icons/fa";
-
-interface Category {
-    id: string;
-    name: string;
-}
+import ModalEditCategory from "./modal-edit-category";
 
 const Categories = () => {
     const [categorias, setCategorias] = useState<Category[]>([]);
+    const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
 
-    const onDragEnd = (result: { destination: { index: number; }; source: { index: number; }; }) => {
+    const handleEditCategory = async () => {
+        setEditCategoryModalOpen(true);
+      };
+    
+      const handleCloseEditCategory = () => {
+        setEditCategoryModalOpen(false);
+      };
+
+    
+
+    const onDragEnd = (result: { destination: { index: number } | null; source: { index: number } }) => {
         if (!result.destination) return;
 
         const items = Array.from(categorias);
@@ -24,44 +33,44 @@ const Categories = () => {
 
     async function buscarCategorias() {
         try {
-            const resposta = await fetch('http://localhost:3333/categories');
-            const data = await resposta.json();
-            // Log para ver os dados recebidos
-            console.log('Dados recebidos:', data);
-            // Transform the data to match the Category interface
-            const categorias = data.map((categoria: any) => ({
-                id: categoria._id.$oid,
-                name: categoria.name
-            }));
-            setCategorias(categorias);
-            // Log para ver as categorias após a transformação
-            console.log('Categorias transformadas:', categorias);
+          const response = await api.get('/categories');
+          const data = response.data;
+      
+          console.log('Dados recebidos:', data);
+      
+          const categorias = data.map((categoria: any) => ({
+            id: categoria._id.$oid,
+            name: categoria.name,
+          }));
+          setCategorias(categorias);
+      
+          console.log('Categorias transformadas:', categorias);
         } catch (erro) {
-            console.error(erro);
-            setCategorias([]);
+          console.error(erro);
+          setCategorias([]);
         }
-    }
+      }
 
-    async function excluirCategoria(id: string) {
-        console.log("Tentando excluir categoria com ID:", id); // Log de depuração
-        if (!id) {
-            console.error('ID da categoria inválido ou não fornecido');
-            return;
-        }
-
+      const deleteCategory = async (name: string) => {
         try {
-            const resposta = await fetch(`http://localhost:3333/categories/${id}`, {
-                method: 'DELETE'
-            });
-            if (!resposta.ok) {
-                throw new Error('Erro ao excluir a categoria');
-            }
-            alert('Categoria Excluída com Sucesso');
-            setCategorias(categorias.filter(categoria => categoria.id !== id));
+          const response = await api.get(`/categories?name=${encodeURIComponent(name)}`);
+          const category = response.data[0];
+        console.log('Categorias do excluir:',category._id)
+          if (!category) {
+            console.error('Categoria não encontrada');
+            return;
+          }
+      
+          await api.delete(`/categories/${category._id}`);
+          alert('Categoria Excluída com Sucesso');
+          setCategorias(categorias.filter(categoria => categoria._id !== category._id));
         } catch (erro) {
-            console.error(erro);
+          console.error(erro);
         }
-    }
+      };
+
+      
+      
 
     useEffect(() => {
         buscarCategorias();
@@ -70,31 +79,39 @@ const Categories = () => {
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="categories">
-                {(provided) => (
-                    
-                    <div className="flex flex-row flex-wrap gap-4 border-2 border-gray-400 rounded p-20" {...provided.droppableProps} ref={provided.innerRef}>
-                        {categorias.map(({ id, name }, index) => (
-                            <Draggable key={id} draggableId={id} index={index}>
-                                {(provided) => (
-
-                                    <div className="category relative group p-4 border border-gray-200 rounded shadow"
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        ref={provided.innerRef}
-                                    >
-                                        {name}
-                                        <div className="absolute right-0 top-0 mt-2 mr-2 opacity-0 group-hover:opacity-100 transition duration-200 ease-in-out">
-                                            <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
-                                                <FaEdit />
-                                            </button>
-                                            <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => excluirCategoria(id)}>
-                                                <FaTrash />
-                                            </button>
+            {(provided) => (
+                    <div className="flex flex-row flex-wrap gap-4 border-2 border-gray-400 rounded p-20"
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                    >
+                        {categorias.length === 0 ? (
+                            <div className="text-center text-red-500 w-full">
+                                Nenhuma categoria criada
+                            </div>
+                        ) : (
+                            categorias.map(({ id, name }, index) => (
+                                <Draggable key={id} draggableId={id} index={index}>
+                                    {(provided) => (
+                                        <div className="category relative group p-4 border border-gray-200 rounded shadow"
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                        >
+                                            {name}
+                                            <div className="absolute right-0 top-0 mt-2 mr-2 opacity-0 group-hover:opacity-100 text-center transition duration-200 ease-in-out">
+                                                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => handleEditCategory(id)}>
+                                                    <FaEdit />
+                                                </button>
+                                                <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => deleteCategory(id)}>
+                                                    <FaTrash />
+                                                </button>
+                                            </div>
+                                            {editCategoryModalOpen && <ModalEditCategory onClose={handleCloseEditCategory} isOpen={true} />}
                                         </div>
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
+                                    )}
+                                </Draggable>
+                            ))
+                        )}
                         {provided.placeholder}
                     </div>
                 )}

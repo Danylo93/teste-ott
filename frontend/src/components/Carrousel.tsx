@@ -4,22 +4,16 @@ import { EmblaOptionsType } from 'embla-carousel'
 import {
   PrevButton,
   NextButton,
-  usePrevNextButtons
+  
 } from './EmblaCarouselArrowButtons'
 import Modal from './modal-detail-video';
 import useEmblaCarousel from 'embla-carousel-react'
+import { Video } from '@/types/video';
 
-export type ImageProps = {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  videoUrl: string;
-  thumbnail: string;
-};
+
 
 type PropType = {
-  slides: ImageProps[]
+  slides: Video[]
   options?: EmblaOptionsType
   title: String
 }
@@ -28,7 +22,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options, title } = props
   const [emblaRef, emblaApi] = useEmblaCarousel({ ...options, slidesToScroll: 5 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<ImageProps | null>(null); 
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null); 
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false)
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false)
 
@@ -45,13 +39,13 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     
   }, [emblaApi]);
 
-  const handleImageClick = (video: ImageProps) => {
-    setSelectedVideo(video); // Defina o vídeo selecionado quando a imagem for clicada
-    setIsModalOpen(true); // Abra o modal quando a imagem for clicada
+  const handleImageClick = (video: Video) => {
+    setSelectedVideo(video); 
+    setIsModalOpen(true); 
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Fecha o modal 
+    setIsModalOpen(false); 
   };
 
  

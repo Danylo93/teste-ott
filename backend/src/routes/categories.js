@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
+const Video = require('../models/Video');
 
 // Rota para criar nova categoria
 router.post('/', async (req, res) => {
@@ -30,9 +31,29 @@ router.put('/:id', async (req, res) => {
 
 // Rota para excluir uma categoria específica
 router.delete('/:id', async (req, res) => {
-  await Category.findByIdAndDelete(req.params.id);
-  res.send({ message: 'Category deleted' });
+  try {
+    const categoryId = req.params.id;
+
+    // Encontra a categoria pelo ID
+    const category = await Category.findByIdAndDelete(categoryId);
+
+    if (!category) {
+      return res.status(404).send({ message: 'Categoria não encontrada' });
+    }
+
+    // Remove a categoria dos vídeos que a contêm
+    await Video.updateMany(
+      { categories: categoryId },
+      { $pull: { categories: categoryId } }
+    );
+
+    res.send({ message: 'Categoria excluída e atualizada nos vídeos' });
+  } catch (error) {
+    console.error('Erro ao excluir a categoria:', error);
+    res.status(500).send({ message: 'Erro ao excluir a categoria' });
+  }
 });
+
 
 
 module.exports = router;

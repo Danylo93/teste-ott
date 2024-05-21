@@ -6,38 +6,35 @@ import VideosCategory from "@/components/VideosCategory";
 import Modal from "@/components/modal-add-video";
 import Categories from "@/components/Categories";
 import { FaArrowRight } from 'react-icons/fa'
+import { Video } from "@/types/video";
+import { Category } from "@/types/category";
+import ModalEditCategory from "@/components/modal-edit-category";
+
 
 
 export default function Home() {
 
-  type Categoria = {
-    id: string;
-    name: string;
-  };
 
-  type Video = {
-    id: string;
-    title: string,
-    description: string,
-    category: string,
-    videoUrl: string,
-    thumbnail: string
-    
-  };
-  
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categorias, setCategorias] = useState<Category[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [nomeCategoria, setNomeCategoria] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
-  const [videoTitulo, setVideoTitulo] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
+  const [addVideoModalOpen, setAddVideoModalOpen] = useState(false);
+  const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
+  const handleAddVideo = () => {
+    setAddVideoModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
+  const handleCloseAddVideo = () => {
+    setAddVideoModalOpen(false);
+  };
+
+  const handleEditCategory = async () => {
+    setEditCategoryModalOpen(true);
+  };
+
+  const handleCloseEditCategory = () => {
+    setEditCategoryModalOpen(false);
   };
 
   
@@ -101,9 +98,7 @@ useEffect(() =>  {
   });
 }, [])
 
-const handleEdit = async () => {
-  
-};
+
 
 
 const handleDelete = async (id: string) => {
@@ -159,7 +154,9 @@ const handleDelete = async (id: string) => {
     onChange={e => setNomeCategoria(e.target.value)}
   />
   <button onClick={criarCategoria} className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2">Adicionar Categoria</button>
+  
 </div>
+
 <Categories />
 
     
@@ -170,12 +167,12 @@ const handleDelete = async (id: string) => {
       <h4 className="text-zinc-600">A Ordenação será conforme está abaixo, você pode alterar a ordem arrastando os vídeos.</h4>
       <button 
         className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2"
-        onClick={handleOpenModal}
+        onClick={handleAddVideo}  disabled={categorias.length === 0}
       >
         Adicionar Novo Vídeo
       </button>
 
-      {modalOpen && <Modal onClose={handleCloseModal} isOpen={true} />}
+      {addVideoModalOpen && <Modal onClose={handleCloseAddVideo} isOpen={true} />}
     
 </div>
 
