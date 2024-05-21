@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd";
-import { Video } from "./modal-add-video";
+
 import { api } from "@/services/api";
+import { Video } from "@/types/video";
 
 const VideosCategory = () => {
     const [videos, setVideos] = useState<Video[]>([]);
@@ -35,11 +36,11 @@ const VideosCategory = () => {
     const processVideosByCategory = (videos: Video[]) => {
         return videos.reduce((groups: { [category: string]: Video[] }, video: Video) => {
             if (video.categories && Array.isArray(video.categories)) {
-                video.categories.forEach(category => {
-                    if (!groups[category]) {
-                        groups[category] = [];
+                video.categories.forEach(cat => {
+                    if (!groups[cat]) {
+                        groups[cat] = [];
                     }
-                    groups[category].push(video);
+                    groups[cat].push(video);
                 });
             } else {
                 console.warn(`O vídeo ${video.id} não tem categorias válidas`);
@@ -62,24 +63,6 @@ const VideosCategory = () => {
         newData[destinationCategory].splice(destination.index, 0, item);
 
         setVideos(Object.values(newData).flat());
-
-        try {
-            const response = await api.put(`/videos/${item.id}`, {
-              categories: [destinationCategory, ...item.categories.filter(category => category !== sourceCategory)]
-            }, {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-          
-            if (response.status === 200) {
-              console.log('Vídeo atualizado com sucesso!');
-            } else {
-              throw new Error('Erro ao atualizar a API');
-            }
-          } catch (error) {
-            console.error(error);
-          }
     };
 
 

@@ -1,9 +1,7 @@
-import LoadingSkeleton from "@/components/LoadingSkeleton";
-
-
+import Loading from "@/components/LoadingSkeleton";
 
 const LoadingPage = () => {
-    return <LoadingSkeleton />
+    return <Loading />
 };
 
 export default LoadingPage;

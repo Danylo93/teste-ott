@@ -10,6 +10,7 @@ import { Video } from "@/types/video";
 import { Category } from "@/types/category";
 import ModalEditCategory from "@/components/modal-edit-category";
 import { api } from "@/services/api";
+import Loading from "./loading";
 
 
 
@@ -21,6 +22,7 @@ export default function Home() {
   const [nameCategoria, setNameCategoria] = useState('');
   const [addVideoModalOpen, setAddVideoModalOpen] = useState(false);
   const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleAddVideo = () => {
     if (categories.length === 0) {
@@ -40,15 +42,18 @@ export default function Home() {
       alert('Por favor, digite o nome da categoria.');
       return;
     }
-  
+
     try {
+  
       const response = await api.post('/categories', {
         name: nameCategoria,
       });
-  
-      if (response.status === 201) {
+
+      if (response.status === 200) {
         alert('Categoria criada com sucesso!');
         setNameCategoria('');
+
+        window.location.reload();
       } else {
         throw new Error(`Erro HTTP! status: ${response.status}`);
       }
@@ -56,11 +61,13 @@ export default function Home() {
       console.error(erro);
       alert('Ocorreu um erro ao criar a categoria.');
     }
-  }
+  };
   
   async function findCategories() {
+
     try {
       const response = await api.get('/categories');
+
       return response.data;
     } catch (erro) {
       console.error(erro);
@@ -82,6 +89,7 @@ export default function Home() {
 useEffect(() =>  {
   findCategories().then(categorias => {
     setCategories(categorias);
+    setIsLoading(false);
   });
   findVideos().then(videos => {
     setVideos(videos);
@@ -114,8 +122,11 @@ useEffect(() =>  {
   <button onClick={createCategory} className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2">Adicionar Categoria</button>
   
 </div>
+{
+  isLoading ? (
+    <Loading /> ) : <Categories />
+}
 
-<Categories />
 
     
 
@@ -125,7 +136,7 @@ useEffect(() =>  {
       <h4 className="text-zinc-600">A Ordenação será conforme está abaixo, você pode alterar a ordem arrastando os vídeos.</h4>
       <button 
         className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2"
-        onClick={handleAddVideo}  disabled={categories.length === 0}
+        onClick={handleAddVideo}
       >
         Adicionar Novo Vídeo
       </button>
@@ -133,8 +144,10 @@ useEffect(() =>  {
       {addVideoModalOpen && <Modal onClose={handleCloseAddVideo} isOpen={true} />}
     
 </div>
-
- <VideosCategory />
+{
+  isLoading ? (
+    <Loading /> ) : <VideosCategory />
+}
       </div>
       
       </div>

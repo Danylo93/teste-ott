@@ -1,6 +1,6 @@
 
 import { api } from '@/services/api';
-import { useState, useEffect, FC, FormEvent } from 'react';
+import { useState, FC } from 'react';
 
 
 interface ModalProps {
@@ -41,6 +41,7 @@ const ModalEditCategory: FC<ModalProps> = ({ isOpen, onClose, categoryId }) => {
         if (categoria._id === category._id) {
           return { ...categoria, name: nameCategory };
         }
+        window.location.reload();
         return categoria;
       }));
     } catch (erro) {

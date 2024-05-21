@@ -3,10 +3,11 @@
 import React, {useEffect, useState}from 'react';
 
 
-import { Video } from '@/components/modal-add-video';
+
 import EmblaCarousel from '@/components/Carrousel';
 import { Header } from '@/components/Header';
 import { api } from '@/services/api';
+import { Video } from '@/types/video';
 
 
 
@@ -31,14 +32,17 @@ export default function Videos() {
   }, []);
 
   const videosByCategory: { [category: string]: Video[] } = videos.reduce((groups, video) => {
-    video.categories.forEach(category => {
-      if (!groups[category]) {
-        groups[category] = [];
-      }
-      groups[category].push(video);
-    });
+    if (Array.isArray(video.categories)) {
+      video.categories.forEach(category => {
+        if (!groups[category]) {
+          groups[category] = [];
+        }
+        groups[category].push(video);
+      });
+    }
     return groups;
-  }, {});
+  }, {} as { [category: string]: Video[] });
+  
 
   
 
@@ -46,12 +50,16 @@ export default function Videos() {
     <>
     <Header />
     <main className='relative overflow-y-scroll p-8 pb-20 scrollbar-hide lg:pl-16 '>
-      {/* <Banner movie={featuredMovie} /> */}
-      {Object.entries(videosByCategory).map(([category, videos]) => (
-          <div key={category}>
-            <EmblaCarousel slides={videos} title={category} />
-          </div>
-        ))}
+    {Object.entries(videosByCategory).map(([category, videos]) => (
+  <div key={category}>
+    {videos.map(video => (
+      <EmblaCarousel key={video.id} slides={videos} title={category} />
+    ))}
+  </div>
+))}
+
+
+
 
        
     </main>

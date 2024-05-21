@@ -17,7 +17,7 @@ React
 Tailwind CSS (para design responsivo)
 
 ## Como Rodar o Projeto
-Pré-requisitos
+### Pré-requisitos
 Node.js
 npm ou yarn
 MongoDB

@@ -1,8 +1,11 @@
 "use client";
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-const LoadingSkeleton = () => {
-    return <Skeleton count={10} />
-};
 
-export default LoadingSkeleton;
+const Loading: React.FC = () => {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white">
+        <p className="text-black text-2xl">Carregando...</p>
+      </div>
+    );
+  };
+  
+  export default Loading;

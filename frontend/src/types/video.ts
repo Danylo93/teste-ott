@@ -2,7 +2,7 @@ export type Video = {
     id: string;
     title: string,
     description: string,
-    category: string,
+    categories: string,
     videoUrl: string,
     thumbnail: string
     

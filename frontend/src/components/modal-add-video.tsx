@@ -1,16 +1,9 @@
 import { api } from '@/services/api';
+import { Video } from '@/types/video';
 import { useState, useEffect, FC, FormEvent } from 'react';
 
-export interface Video {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    videoUrl: string;
-    thumbnail: string;
-}
 
-interface Categoria {
+interface Category {
   id: string;
   name: string;
   videos?: Video[];
@@ -26,7 +19,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
   const [videoTitle, setVideoTitle] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnail, setThumbnail] = useState('');
-  const [categories, setCategories] = useState<Categoria[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {

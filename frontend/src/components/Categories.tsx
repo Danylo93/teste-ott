@@ -64,6 +64,7 @@ const Categories = () => {
           await api.delete(`/categories/${category._id}`);
           alert('Categoria Excluída com Sucesso');
           setCategorias(categorias.filter(categoria => categoria._id !== category._id));
+          window.location.reload();
         } catch (erro) {
           console.error(erro);
         }
@@ -77,7 +78,7 @@ const Categories = () => {
     }, []);
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
             <Droppable droppableId="categories">
             {(provided) => (
                     <div className="flex flex-row flex-wrap gap-4 border-2 border-gray-400 rounded p-20"
