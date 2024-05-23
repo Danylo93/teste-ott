@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import ModalEditCategory from "./modal-edit-category";
+import Link from "next/link";
 
 const Categories = () => {
     const [categorias, setCategorias] = useState<Category[]>([]);
@@ -51,20 +52,20 @@ const Categories = () => {
         }
       }
 
-      const deleteCategory = async (name: string) => {
+      const deleteCategory = async (id: string) => {
         try {
-          const response = await api.get(`/categories?name=${encodeURIComponent(name)}`);
-          const category = response.data[0];
-        console.log('Categorias do excluir:',category._id)
-          if (!category) {
-            console.error('Categoria não encontrada');
-            return;
-          }
+          const response = await buscarCategorias()
+          const category = response;
+          console.log('Categorias do excluir:',category)
+          // if (!category) {
+          //   console.error('Categoria não encontrada');
+          //   return;
+          // }
       
-          await api.delete(`/categories/${category._id}`);
-          alert('Categoria Excluída com Sucesso');
-          setCategorias(categorias.filter(categoria => categoria._id !== category._id));
-          window.location.reload();
+          //await api.delete(`/categories/${category._id}`);
+          //alert('Categoria Excluída com Sucesso');
+          //setCategorias(categorias.filter(categoria => categoria._id !== category._id));
+          //window.location.reload();
         } catch (erro) {
           console.error(erro);
         }
@@ -78,7 +79,7 @@ const Categories = () => {
     }, []);
 
     return (
-      <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+      <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="categories">
             {(provided) => (
                     <div className="flex flex-row flex-wrap gap-4 border-2 border-gray-400 rounded p-20"
@@ -100,12 +101,18 @@ const Categories = () => {
                                         >
                                             {name}
                                             <div className="absolute right-0 top-0 mt-2 mr-2 opacity-0 group-hover:opacity-100 text-center transition duration-200 ease-in-out">
-                                                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => handleEditCategory(id)}>
+                                                
+                                                
+                                                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" >
                                                     <FaEdit />
                                                 </button>
-                                                <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => deleteCategory(id)}>
+                                               
+                                                
+                                                
+                                                <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={deleteCategory} >
                                                     <FaTrash />
                                                 </button>
+                                                
                                             </div>
                                             {editCategoryModalOpen && <ModalEditCategory onClose={handleCloseEditCategory} isOpen={true} />}
                                         </div>
