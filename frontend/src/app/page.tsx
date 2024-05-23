@@ -8,7 +8,6 @@ import Categories from "@/components/Categories";
 import { FaArrowRight } from 'react-icons/fa'
 import { Video } from "@/types/video";
 import { Category } from "@/types/category";
-import ModalEditCategory from "@/components/modal-edit-category";
 import { api } from "@/services/api";
 import Loading from "./loading";
 
