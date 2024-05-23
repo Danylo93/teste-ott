@@ -69,7 +69,7 @@ const VideosCategory = () => {
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
                 {Object.keys(videosByCategory).length === 0 ? (
-                    <div className="flex gap-4 border-2 text-center border-gray-400 rounded p-20 w-full">
+                    <div className=" gap-4 border-2 text-center border-gray-400 rounded p-20 w-full">
                         <p className="text-md  text-red-700">Crie uma categoria para poder adicionar Vídeos.</p>
                     </div>
                 ) : (

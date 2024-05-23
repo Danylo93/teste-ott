@@ -7,9 +7,24 @@ router.post('/', async (req, res) => {
   const existingCategory = await Category.findOne({ name: req.body.name });
   if (existingCategory) return res.status(400).send('Categoria já existe.');
 
-  const category = new Category(req.body);
-  await category.save();
-  res.send(category);
+  try {
+    const category = new Category(req.body);
+    await category.save();
+
+    
+    const videosToUpdate = await Video.find({ categories: { $in: req.body.name } });
+    if (videosToUpdate.length > 0) {
+      for (const video of videosToUpdate) {
+        video.categories.push(category.name);
+        await video.save();
+      }
+    }
+
+    res.send(category);
+  } catch (error) {
+    console.error('Erro ao criar a categoria:', error);
+    res.status(500).send({ message: 'Erro ao criar a categoria' });
+  }
 });
 
 router.get('/', async (req, res) => {
@@ -38,12 +53,13 @@ router.delete('/:id', async (req, res) => {
       { $pull: { categories: categoryId } }
     );
 
-    res.send({ message: 'Categoria excluída e atualizada nos vídeos' });
+    res.send({ message: 'Categoria excluída e vídeos associados removidos' });
   } catch (error) {
     console.error('Erro ao excluir a categoria:', error);
     res.status(500).send({ message: 'Erro ao excluir a categoria' });
   }
 });
+
 
 
 
