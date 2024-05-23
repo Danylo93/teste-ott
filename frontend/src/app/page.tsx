@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import VideosCategory from "@/components/VideosCategory";
-import Modal from "@/components/modal-add-video";
+import ModalAddVideo from "@/components/modal-add-video";
 import Categories from "@/components/Categories";
 import { FaArrowRight } from 'react-icons/fa'
 import { Video } from "@/types/video";
@@ -141,7 +141,7 @@ export default function Home() {
         {isLoading ? (
           <Loading />
         ) : (
-          <Categories onDeleteCategory={handleDeleteCategory} />
+          <Categories />
         )}
 
         <div className="rounded bg-white">

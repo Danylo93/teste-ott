@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { api } from "@/services/api";
 import { Video } from "@/types/video";
-import Modal from "./modal-add-video";
+import ModalAddVideo from "./modal-add-video";
 
 const VideosCategory = () => {
     const [videos, setVideos] = useState<Video[]>([]);
@@ -152,7 +152,7 @@ const VideosCategory = () => {
                     </div>
                 </DragDropContext>
             )}
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onVideoAdded={handleVideoAdded} />
+            <ModalAddVideo isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onVideoAdded={handleVideoAdded} />
         </div>
     );
 };

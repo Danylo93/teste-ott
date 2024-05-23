@@ -17,26 +17,10 @@ const ModalVideoDetail: FC<ModalProps> = ({ isOpen, onClose, video }) => {
     return null;
   }
 
- 
   const videoId = video.videoUrl.split('v=')[1];
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
   
-  const handleOutsideClick = (event: MouseEvent) => {
-    if ((event.target as Element).classList.contains('modal-overlay')) {
-      onClose();
-    }
-  };
-
- 
-  const handleEscapeKey = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  };
-
- 
-
   return (
     <>
       <div className="fixed z-50 inset-0 overflow-y-auto">

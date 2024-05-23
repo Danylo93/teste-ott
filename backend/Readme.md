@@ -33,9 +33,3 @@ Se você quiser contribuir para este projeto, por favor, faça um fork do reposi
 ## Licença
 
 Este projeto está licenciado sob a licença MIT.
-
-http://localhost:3030/featured
-http://localhost:3030/videos
-http://localhost:3030/genres
-http://localhost:3030/categories
-http://localhost:3030/cast_members

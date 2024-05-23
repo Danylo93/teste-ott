@@ -1,3 +1,4 @@
+import { api } from '@/services/api';
 import React from 'react';
 import { FaTrash } from "react-icons/fa";
 
@@ -18,15 +19,13 @@ const BtnDelete: React.FC<BtnDeleteProps> = ({ id, name, onDelete }) => {
     
     if (userConfirmed) {
       try {
-        const res = await fetch(`http://localhost:3333/categories/${id}`, {
-          method: 'DELETE',
-        });
-
-        if (res.ok) {
+        const res = await api.delete(`/categories/${id}`);
+    
+        if (res.status === 200) {
           onDelete(); 
           alert(`Categoria excluída com sucesso: ${name}`);
         } else {
-          const errorData = await res.json();
+          const errorData = res.data;
           alert(`Erro ao excluir categoria: ${errorData.message || 'Erro desconhecido'}`);
         }
       } catch (error) {

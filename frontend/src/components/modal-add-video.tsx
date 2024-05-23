@@ -14,7 +14,7 @@ interface ModalProps {
   onVideoAdded: () => void; // Nova prop para notificar a adição de um vídeo
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onClose, onVideoAdded }) => {
+const ModalAddVideo: FC<ModalProps> = ({ isOpen, onClose, onVideoAdded }) => {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -218,4 +218,4 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, onVideoAdded }) => {
   );
 }
 
-export default Modal;
+export default ModalAddVideo;

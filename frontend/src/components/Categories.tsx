@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import BtnDelete from "./BtnDelete";
 import BtnEdit from "./BtnEdit";
+import { api } from "@/services/api";
 
 const Categories = () => {
  
@@ -25,14 +26,14 @@ const Categories = () => {
     
 
     useEffect(() => {
-      fetchCategories();
+      loadCategories();
     }, []);
 
     
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3333/categories');
-        const data = await response.json();
+        const response = await api.get('/categories');
+        const data = response.data;
         setCategories(data);
         setIsLoading(false);
       } catch (error) {
@@ -41,7 +42,11 @@ const Categories = () => {
     };
 
       const handleCategoryDelete = () => {
-        fetchCategories();
+        loadCategories();
+      };
+
+      const handleCategoryEdit = () => {
+        loadCategories();
       };
 
     return (
@@ -69,7 +74,7 @@ const Categories = () => {
                       >
                         <span className="flex-grow text-center text-slate-300">{category.name}</span>
                         <div>
-                          <BtnEdit id={category._id} currentName={category.name} />
+                          <BtnEdit id={category._id} currentName={category.name} onEdit={handleCategoryEdit} />
                           <BtnDelete id={category._id} name={category.name} onDelete={handleCategoryDelete} />
                         </div>
                       </div>
