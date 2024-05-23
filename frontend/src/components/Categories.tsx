@@ -1,12 +1,7 @@
 "use client"
 
-import { api } from "@/services/api";
-import { Category } from "@/types/category";
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import ModalEditCategory from "./modal-edit-category";
-import Link from "next/link";
 import BtnDelete from "./BtnDelete";
 import BtnEdit from "./BtnEdit";
 
@@ -19,7 +14,7 @@ const Categories = () => {
 
     
     const handleDragEnd = (result) => {
-      if (!result.destination) return; // se a posição final for nula, não faça nada
+      if (!result.destination) return; 
   
       const items = Array.from(categories);
       const [reorderedItem] = items.splice(result.source.index, 1);
@@ -58,6 +53,7 @@ const Categories = () => {
         <p className="text-gray-400 text-center">Você precisa adicionar pelo menos uma categoria.</p>
         </div>
       ) : (
+        <div className="border-2 text-center border-gray-400 rounded p-20 w-full">
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="categories">
             {(provided) => (
@@ -85,6 +81,7 @@ const Categories = () => {
             )}
           </Droppable>
         </DragDropContext>
+        </div>
       )}
     </div>
     );

@@ -109,6 +109,10 @@ export default function Home() {
     });
   }, [])
 
+  const handleVideoAdded = () => {
+    findVideos();
+};
+
   return (
     <div className="h-screen">
       <div className="p-10">
@@ -121,7 +125,7 @@ export default function Home() {
       <div className=" p-10">
         <h2 className="text-black font-bold">Criação e Ordenação de Categorias</h2>
         <h4 className="text-zinc-600">Para criar uma categoria basta digitar o nome da categoria e dar um clique no botão. A ordenação será conforme está abaixo, você pode alterar a ordem arrastando as categorias.</h4>
-        <div className="flex items-center justify-between border-2 border-gray-400 rounded-lg p-4 pb-10 mb-10">
+        <div className="flex items-center justify-between border-2 mt-2 border-gray-400 rounded-lg p-4 pb-10 mb-10">
           <input 
             type="text"
             name="category"
@@ -142,16 +146,7 @@ export default function Home() {
 
         <div className="rounded bg-white">
           <h2 className="font-bold mb-4 text-black mt-10">Vídeos da Categoria</h2>
-          <div className="flex items-center justify-between">
-            <h4 className="text-zinc-600">A Ordenação será conforme está abaixo, você pode alterar a ordem arrastando os vídeos.</h4>
-            <button 
-              className="bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 flex-shrink-0 whitespace-nowrap mb-2"
-              onClick={handleAddVideo}
-            >
-              Adicionar Novo Vídeo
-            </button>
-            {addVideoModalOpen && <Modal onClose={handleCloseAddVideo} isOpen={true} />}
-          </div>
+          
           {isLoading ? (
             <Loading />
           ) : (

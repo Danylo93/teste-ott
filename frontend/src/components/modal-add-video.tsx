@@ -2,7 +2,6 @@ import { api } from '@/services/api';
 import { Video } from '@/types/video';
 import { useState, useEffect, FC, FormEvent } from 'react';
 
-
 interface Category {
   id: string;
   name: string;
@@ -12,9 +11,10 @@ interface Category {
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onVideoAdded: () => void; // Nova prop para notificar a adição de um vídeo
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
+const Modal: FC<ModalProps> = ({ isOpen, onClose, onVideoAdded }) => {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -34,6 +34,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
   
     loadingCategories();
   }, []);
+
   const extractYouTubeVideoId = (url: string) => {
     const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return videoIdMatch ? videoIdMatch[1] : null;
@@ -65,7 +66,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
       if (!response.status === 200) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+      onVideoAdded();
       alert('Vídeo adicionado com sucesso!');
       onClose();
     } catch (error) {
@@ -218,4 +219,3 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
 }
 
 export default Modal;
-

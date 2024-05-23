@@ -23,7 +23,7 @@ const BtnDelete: React.FC<BtnDeleteProps> = ({ id, name, onDelete }) => {
         });
 
         if (res.ok) {
-          onDelete(); // Chama a função de retorno de chamada para recarregar a página
+          onDelete(); 
           alert(`Categoria excluída com sucesso: ${name}`);
         } else {
           const errorData = await res.json();
