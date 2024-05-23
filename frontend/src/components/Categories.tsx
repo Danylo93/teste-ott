@@ -55,7 +55,7 @@ const Categories = () => {
         <p className="text-black text-center">Carregando Categorias</p>
       ) : categories.length === 0 ? (
         <div className="border-2 text-center border-gray-400 rounded p-20 w-full">
-        <p className="text-gray-400 text-center">Você precisa adicionar pelo menos uma categoria.</p>
+        <p className="text-gray-400 text-center">Nenhuma Categoria criada.</p>
         </div>
       ) : (
         <div className="border-2 text-center border-gray-400 rounded p-20 w-full">

@@ -76,29 +76,6 @@ export default function Home() {
       return [];
     }
   }
-
-  const handleDeleteCategory = async (categoryId: string) => {
-    try {
-      const response = await api.delete(`/categories/${categoryId}`);
-
-      if (response.status === 200) {
-        alert('Categoria excluída com sucesso!');
-        // Recarrega as categorias e os vídeos após a exclusão
-        findCategories().then(categorias => {
-          setCategories(categorias);
-        });
-        findVideos().then(videos => {
-          setVideos(videos);
-        });
-      } else {
-        throw new Error(`Erro HTTP! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Erro ao excluir a categoria:', error);
-      alert('Ocorreu um erro ao excluir a categoria.');
-    }
-  };
-
   useEffect(() =>  {
     findCategories().then(categorias => {
       setCategories(categorias);
@@ -109,10 +86,7 @@ export default function Home() {
     });
   }, [])
 
-  const handleVideoAdded = () => {
-    findVideos();
-};
-
+  
   return (
     <div className="h-screen">
       <div className="p-10">

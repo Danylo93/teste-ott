@@ -11,7 +11,7 @@ interface Category {
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onVideoAdded: () => void; // Nova prop para notificar a adição de um vídeo
+  onVideoAdded: () => void;
 }
 
 const ModalAddVideo: FC<ModalProps> = ({ isOpen, onClose, onVideoAdded }) => {
