@@ -1,24 +1,11 @@
-"use client"
-
 import { useEffect, useState } from "react";
-import { DragDropContext, Draggable, DropResult, Droppable } from "react-beautiful-dnd";
-
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { api } from "@/services/api";
 import { Video } from "@/types/video";
 
 const VideosCategory = () => {
     const [videos, setVideos] = useState<Video[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    async function findVideos() {
-        try {
-          const response = await api.get('/videos');
-          return response.data;
-        } catch (erro) {
-          console.error(erro);
-          return [];
-        }
-      }
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -28,10 +15,18 @@ const VideosCategory = () => {
     }, []);
 
     useEffect(() => {
-        findVideos().then(videos => {
-            setVideos(videos || []);
-        });
+        findVideos();
     }, []);
+
+    async function findVideos() {
+        try {
+            const response = await api.get('/videos');
+            setVideos(response.data || []);
+        } catch (error) {
+            console.error('Erro ao buscar vídeos:', error);
+            setVideos([]);
+        }
+    }
 
     const processVideosByCategory = (videos: Video[]) => {
         return videos.reduce((groups: { [category: string]: Video[] }, video: Video) => {
@@ -49,22 +44,24 @@ const VideosCategory = () => {
         }, {});
     };
 
-    const onDragEnd = async (result: DropResult) => {
-        const { source, destination } = result;
-        if (!destination) return;
+    const onDragEnd = (result: DropResult) => {
+        if (!result.destination) return;
 
-        const videosByCategory = processVideosByCategory(videos);
+        const sourceCategory = result.source.droppableId;
+        const destinationCategory = result.destination.droppableId;
 
-        const sourceCategory = source.droppableId;
-        const destinationCategory = destination.droppableId;
+        const sourceIndex = result.source.index;
+        const destinationIndex = result.destination.index;
 
-        const newData = { ...videosByCategory };
-        const [item] = newData[sourceCategory].splice(source.index, 1);
-        newData[destinationCategory].splice(destination.index, 0, item);
+        const updatedVideos = [...videos];
+        const movedVideo = updatedVideos.find(video => video.categories.includes(sourceCategory));
+        if (!movedVideo) return;
 
-        setVideos(Object.values(newData).flat());
+        movedVideo.categories = movedVideo.categories.filter(category => category !== sourceCategory);
+        movedVideo.categories.splice(destinationIndex, 0, destinationCategory);
+
+        setVideos(updatedVideos);
     };
-
 
     const videosByCategory = processVideosByCategory(videos);
 
