@@ -45,7 +45,7 @@ const BtnEdit: React.FC<BtnEditProps> = ({ id, currentName }) => {
             type="text" 
             value={name} 
             onChange={(e) => setName(e.target.value)} 
-            className="border p-1"
+            className="border p-1 rounded text-black"
           />
           <button onClick={editCategory} className="bg-blue-500 text-white px-2 py-1 rounded ml-2">
             Salvar

@@ -29,42 +29,24 @@ const Categories = () => {
     };
     
 
-    
+    useEffect(() => {
+      fetchCategories();
+    }, []);
 
     
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:3333/categories');
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Erro ao buscar categorias:', error);
+      }
+    };
 
-      useEffect(() => {
-        const fetchCategories = async () => {
-          try {
-            const response = await fetch('http://localhost:3333/categories');
-            const data = await response.json();
-            setCategories(data);
-          } catch (error) {
-            console.error('Erro ao buscar categorias:', error);
-          }
-        };
-    
+      const handleCategoryDelete = () => {
         fetchCategories();
-      }, []);
-
-      useEffect(() => {
-        const handleCategoryDelete = () => {
-          
-          window.location.reload(); // recarrega a página
-        };
-    
-
-        window.addEventListener('categoryDeleted', handleCategoryDelete);
-    
-       
-        return () => {
-          window.removeEventListener('categoryDeleted', handleCategoryDelete);
-        };
-      }, [categories]);
-    
-
-      
-
+      };
 
     return (
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -78,12 +60,12 @@ const Categories = () => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className="category-item bg-gray-500 rounded-lg p-2 mb-2 flex items-center"
+                    className="category-item bg-slate-900 rounded-lg p-2 mb-2 flex items-center"
                   >
-                    <span className="flex-grow text-center text-black">{category.name}</span>
+                    <span className="flex-grow text-center text-slate-300">{category.name}</span>
                     <div>
                       <BtnEdit id={category._id} currentName={category.name} />
-                      <BtnDelete id={category._id} />
+                      <BtnDelete id={category._id} name={category.name} onDelete={handleCategoryDelete} />
                     </div>
                   </div>
                 )}

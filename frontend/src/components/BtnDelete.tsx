@@ -2,17 +2,19 @@ import React from 'react';
 import { FaTrash } from "react-icons/fa";
 
 interface BtnDeleteProps {
-  id: string; // ou number, dependendo do tipo de ID usado no MongoDB
+  id: string;
+  name: string;
+  onDelete: () => void; 
 }
 
-const BtnDelete: React.FC<BtnDeleteProps> = ({ id }) => {
+const BtnDelete: React.FC<BtnDeleteProps> = ({ id, name, onDelete }) => {
   const removeCategory = async () => {
     if (!id || id === 'undefined') {
       alert('ID inválido');
       return;
     }
 
-    const userConfirmed = window.confirm("Você tem certeza que deseja excluir esta categoria?");
+    const userConfirmed = window.confirm(`Você tem certeza que deseja excluir categoria de ${name}?`);
     
     if (userConfirmed) {
       try {
@@ -21,6 +23,7 @@ const BtnDelete: React.FC<BtnDeleteProps> = ({ id }) => {
         });
 
         if (res.ok) {
+          onDelete(); // Chama a função de retorno de chamada para recarregar a página
           alert(`Categoria excluída com sucesso: ${name}`);
         } else {
           const errorData = await res.json();
