@@ -29,7 +29,7 @@ const BtnDelete: React.FC<BtnDeleteProps> = ({ id, name, onDelete }) => {
           alert(`Erro ao excluir categoria: ${errorData.message || 'Erro desconhecido'}`);
         }
       } catch (error) {
-        alert(`Erro ao conectar com o servidor: ${error.message}`);
+        alert(`Erro ao conectar com o servidor: ${error}`);
       }
     }
   };

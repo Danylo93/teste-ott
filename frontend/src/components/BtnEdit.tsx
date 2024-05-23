@@ -30,7 +30,7 @@ const BtnEdit: React.FC<BtnEditProps> = ({ id, currentName, onEdit }) => {
         alert(`Erro ao atualizar categoria: ${errorData.message || 'Erro desconhecido'}`);
       }
     } catch (error) {
-      alert(`Erro ao conectar com o servidor: ${error.message}`);
+      alert(`Erro ao conectar com o servidor: ${error}`);
     }
   };
 
