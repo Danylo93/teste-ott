@@ -16,21 +16,8 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [nameCategoria, setNameCategoria] = useState('');
-  const [addVideoModalOpen, setAddVideoModalOpen] = useState(false);
-  const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleAddVideo = () => {
-    if (categories.length === 0) {
-      alert('Por favor adicione uma categoria, antes de adicionar um vídeo!!!');
-      return;
-    }
-    setAddVideoModalOpen(true);
-  };
-
-  const handleCloseAddVideo = () => {
-    setAddVideoModalOpen(false);
-  };
 
   async function createCategory() {
     if (!nameCategoria) {

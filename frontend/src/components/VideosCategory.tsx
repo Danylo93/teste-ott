@@ -9,6 +9,7 @@ const VideosCategory = () => {
     const [videosByCategory, setVideosByCategory] = useState<{ [category: string]: Video[] }>({});
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [categories, setCategories] = useState<{ [id: string]: string }>({});
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -19,7 +20,23 @@ const VideosCategory = () => {
 
     useEffect(() => {
         findVideos();
+        loadCategories();
     }, []);
+
+    async function loadCategories() {
+        try {
+            const response = await api.get('/categories');
+            const categoriesData = response.data || [];
+            const categoriesMap = categoriesData.reduce((acc: { [id: string]: string }, category: { _id: string, name: string }) => {
+                acc[category._id] = category.name;
+                return acc;
+            }, {});
+            setCategories(categoriesMap);
+        } catch (error) {
+            console.error('Erro ao buscar categorias:', error);
+            setCategories({});
+        }
+    }
 
     async function findVideos() {
         try {
@@ -110,24 +127,24 @@ const VideosCategory = () => {
             ) : (
                 <DragDropContext onDragEnd={onDragEnd}>
                     <div className="flex gap-4 justify-between my-20 mx-4 flex-col lg:flex-row">
-                        {Object.keys(videosByCategory).map((category) => (
-                            <Droppable key={category} droppableId={`droppable-${category}`}>
+                        {Object.keys(videosByCategory).map((categoryId) => (
+                            <Droppable key={categoryId} droppableId={`droppable-${categoryId}`}>
                                 {(provided) => (
                                     <div
                                         className="p-5 lg:w-1/3 w-full bg-white border-gray-400 border border-dashed rounded-md"
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
                                     >
-                                        <h2 className="text-center text-lg font-bold mb-6 text-black">{category}</h2>
+                                        <h2 className="text-center text-lg font-bold mb-6 text-black">{categories[categoryId]}</h2>
                                         <div className="flex flex-col items-center">
-                                            {videosByCategory[category].map((video, index) => (
-                                                <Draggable key={video.id} draggableId={`draggable-${category}-${video.id}`} index={index}>
+                                            {videosByCategory[categoryId].map((video, index) => (
+                                                <Draggable key={video.id} draggableId={`draggable-${categoryId}-${video.id}`} index={index}>
                                                     {(provided, snapshot) => (
                                                         <div
                                                             className={`flex items-center bg-gray-200 my-3 p-4 ${snapshot.isDragging ? 'opacity-50' : ''}`}
                                                             {...provided.dragHandleProps}
                                                             {...provided.draggableProps}
-                                                            ref={provided.innerRef}
+                                                            ref={                                                            provided.innerRef}
                                                             style={{
                                                                 ...provided.draggableProps.style,
                                                                 borderRadius: '8px',
@@ -158,3 +175,4 @@ const VideosCategory = () => {
 };
 
 export default VideosCategory;
+

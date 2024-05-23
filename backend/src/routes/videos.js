@@ -5,17 +5,23 @@ const Category = require('../models/Category');
 
 router.post('/', async (req, res) => {
   try {
-    const categories = await Category.find({
-      name: { $in: req.body.categories }
-    }).select('name'); 
-
-    if (categories.length !== req.body.categories.length) {
-      return res.status(400).send('Uma ou mais categorias são inválidas.');
+    
+    const categoryNames = req.body.categories;
+    const categories = await Category.find({ name: { $in: categoryNames } });
+    
+    
+    if (categories.length !== categoryNames.length) {
+      const notFoundCategories = categoryNames.filter(name => !categories.some(category => category.name === name));
+      return res.status(400).send(`As seguintes categorias não foram encontradas: ${notFoundCategories.join(', ')}`);
     }
 
+    
     const video = new Video({
-      ...req.body,
-      categories: categories.map(category => category.name) 
+      title: req.body.title,
+      description: req.body.description,
+      categories: categories.map(category => category._id),
+      thumbnail: req.body.thumbnail,
+      videoUrl: req.body.videoUrl,
     });
 
     await video.save();
@@ -24,7 +30,6 @@ router.post('/', async (req, res) => {
     res.status(500).send('Erro ao criar o vídeo: ' + error.message);
   }
 });
-
 
 router.get('/', async (req, res) => {
   try {

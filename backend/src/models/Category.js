@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
-  id: String,
   name: String,
-  videos: [{ type: mongoose.Schema.Types.String, ref: 'Video', required: false }],
+  videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
 });
 
 module.exports = mongoose.model('Category', categorySchema);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const videoSchema = new mongoose.Schema({
   title: String,
   description: String,
-  categories: [{ type: mongoose.Schema.Types.String, ref: 'Category' }],
+  categories: [String],
   thumbnail: String,
   videoUrl: String,
 });
